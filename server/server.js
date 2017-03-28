@@ -32,14 +32,20 @@ io.on('connection',(socket)=>{
         console.log('Got a new Email creation request',newEmail)
     })*/
 
-    socket.emit('newMessage',{
+/*    socket.emit('newMessage',{
         from:"server@socket.com",
         text:"From the server",
         createAt:new Date()
-    })
+    })*/
 
     socket.on('createMessage',(newMessage)=>{
         console.log('New message from the client',newMessage)
+        // Emit this new message to all the users connected
+        io.emit('newMessage',{
+            from:newMessage.from,
+            text:newMessage.text,
+            createdAt:new Date().getTime()
+        })
     })
 
     socket.on('disconnect',()=>{
