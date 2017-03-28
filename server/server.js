@@ -20,6 +20,28 @@ app.use(express.static(publicPath))
 io.on('connection',(socket)=>{
     console.log("New user connected")
 
+    // Emit a custom event
+/*    socket.emit('newEmail',{
+        from:"kiran@socketserver.com",
+        text:"Hi this is test email from socket server",
+        createdAt:new Date().getUTCDate()
+    })
+
+    // Listen to custom event
+    socket.on('createEmail',(newEmail)=>{
+        console.log('Got a new Email creation request',newEmail)
+    })*/
+
+    socket.emit('newMessage',{
+        from:"server@socket.com",
+        text:"From the server",
+        createAt:new Date()
+    })
+
+    socket.on('createMessage',(newMessage)=>{
+        console.log('New message from the client',newMessage)
+    })
+
     socket.on('disconnect',()=>{
         console.log('Client got disconnected')
     })
