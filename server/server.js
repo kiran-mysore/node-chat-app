@@ -3,6 +3,7 @@ const express = require('express')
 const http = require('http')
 const socketIO = require('socket.io')
 
+const {generateMessage} = require('./utils/message.js')
 //console.log(__dirname + '/../public')
 
 const publicPath = path.join(__dirname, '../public')
@@ -18,7 +19,7 @@ app.use(express.static(publicPath))
 
 // Register a event listener
 io.on('connection',(socket)=>{
-    console.log("New user connected")
+        console.log("New user connected")
 
     // Emit a custom event
 /*    socket.emit('newEmail',{
@@ -39,31 +40,39 @@ io.on('connection',(socket)=>{
     })*/
 
 
-    socket.emit('newMessage',{
+/*    socket.emit('newMessage',{
         from:'Admin',
-        text:'Welcome to the chat app'
-    })
+        text:'Welcome to the chat app',
+        createdAt:new Date().getTime()
+    })*/
 
-    socket.broadcast.emit('newMessage',{
+/*     socket.broadcast.emit('newMessage',{
         from:'Admin',
         text:'New user joined',
         createdAt:new Date().getTime()
-    })
+    }) */ 
+    socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'))
+    socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined'))
+
+ 
     socket.on('createMessage',(newMessage)=>{
+        
         console.log('New message from the client',newMessage)
+
         // Emit this new message to all the users connected
-  /*      io.emit('newMessage',{
+        io.emit('newMessage',generateMessage(newMessage.from,newMessage.text))        
+
+        /* io.emit('newMessage',{
             from:newMessage.from,
             text:newMessage.text,
             createdAt:new Date().getTime()
         })*/
-
         //Emit this message to the users connected except the sender
-        socket.broadcast.emit('newMessage',{
+/*        socket.broadcast.emit('newMessage',{
             from:newMessage.from,
             text:newMessage.text,
             createdAt:new Date().getTime()
-        })
+        })*/
     })
 
     socket.on('disconnect',()=>{
