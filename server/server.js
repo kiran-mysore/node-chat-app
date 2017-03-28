@@ -55,12 +55,15 @@ io.on('connection',(socket)=>{
     socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined'))
 
  
-    socket.on('createMessage',(newMessage)=>{
-        
+    socket.on('createMessage',(newMessage,callback)=>{
+
         console.log('New message from the client',newMessage)
 
         // Emit this new message to all the users connected
-        io.emit('newMessage',generateMessage(newMessage.from,newMessage.text))        
+        io.emit('newMessage',generateMessage(newMessage.from,newMessage.text))
+
+        //Just acknowledge the client
+        callback('This Server acknowledgement')
 
         /* io.emit('newMessage',{
             from:newMessage.from,

@@ -14,6 +14,30 @@ socket.on('disconnect',function(){
 // Listen to custom events
 socket.on('newMessage',function(message){
     console.log("New message from the server", message)
+    var li = jQuery('<li></li>')
+    li.text(`${message.from} : ${message.text}`)
+
+    jQuery('#messages').append(li)
+})
+
+// Listen for Server acknowledgement
+/* socket.emit('createMessage',{
+    from:"client",
+    text:"Hi, Server."
+    
+},function(ack){
+    console.log(`From the Server : ${ack}`)
+})*/
+
+jQuery('#message-form').on('submit',function(e){
+    e.preventDefault()
+
+    socket.emit('createMessage',{
+        from: 'jQuery User',
+        text:jQuery('[name=message]').val()
+    },function(){
+
+    })
 })
 // Create a custom events
 /*socket.emit('createMessage',{
