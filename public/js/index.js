@@ -20,6 +20,19 @@ socket.on('newMessage',function(message){
     jQuery('#messages').append(li)
 })
 
+socket.on('newLocationMessage',function(message){
+    console.log("New message from the server", message)
+    var li = jQuery('<li></li>')
+    // Open the link i separate tab
+    var a = jQuery('<a target="_blank">My Current Location:</a>')
+
+    li.text(`${message.from} : `)
+    a.attr('href',message.url)
+    li.append(a)
+    jQuery('#messages').append(li)
+})
+
+
 // Listen for Server acknowledgement
 /* socket.emit('createMessage',{
     from:"client",
@@ -39,6 +52,28 @@ jQuery('#message-form').on('submit',function(e){
 
     })
 })
+
+var locationButton = jQuery("#send-location")
+
+locationButton.on('click',function(){
+    if(!navigator.geolocation){
+        return alert("Geolocation is not supported by your browser!")
+    }
+
+        navigator.geolocation.getCurrentPosition(function(position){
+            // Emit the geolocation co-ordinates to the server
+            socket.emit('createGeoLocationMessage',{
+                latitude:position.coords.latitude,
+                longitude:position.coords.longitude
+            })
+               console.log(position)
+        },function(){
+            alert('Unable to fetch the location')
+        })
+})
+
+
+
 // Create a custom events
 /*socket.emit('createMessage',{
     to:"admin@socket.com",
@@ -47,8 +82,6 @@ jQuery('#message-form').on('submit',function(e){
 /*socket.on('newEmail',function(email){
     console.log('Got new Email',email)
 })
-
-
 
 
  socket.emit('createEmail',{
