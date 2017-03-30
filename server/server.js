@@ -63,7 +63,8 @@ io.on('connection',(socket)=>{
         io.emit('newMessage',generateMessage(newMessage.from,newMessage.text))
 
         //Just acknowledge the client
-        callback('This Server acknowledgement')
+        //callback('This Server acknowledgement')
+        callback()
 
         /* io.emit('newMessage',{
             from:newMessage.from,
