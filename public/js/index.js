@@ -11,6 +11,23 @@ socket.on('disconnect',function(){
             console.log('Disconnectd from the server')
 })
 
+function scrollToBottom(){
+    // Selectors
+    var messages = jQuery('#messages')
+    var newMessage = messages.children('li:last-child')
+    // Heights
+    var clientHeight = messages.prop('clientHeight')
+    var scrollTop = messages.prop('scrollTop')
+    var scrollHeight = messages.prop('scrollHeight')
+    var newMessageHeight = newMessage.innerHeight()
+    var lastMessageHeight = newMessage.prev().innerHeight()
+
+    if(scrollTop + clientHeight + newMessageHeight + lastMessageHeight >= scrollHeight){
+        //console.log('Must scroll')
+        messages.scrollTop(scrollHeight)
+    }
+}
+
 // Listen to custom events
 socket.on('newMessage',function(message){
     var formattedTime = moment(message.createdAt).format('h:mm a')
@@ -21,7 +38,7 @@ socket.on('newMessage',function(message){
         createdAt:formattedTime
     })
     jQuery('#messages').append(html)
-
+    scrollToBottom()
     /*    var formattedTime = moment(message.createdAt).format('h:mm a')
         console.log("New message from the server", message)
         var li = jQuery('<li></li>')
@@ -40,7 +57,7 @@ socket.on('newLocationMessage',function(message){
         createdAt:formattedTime   
     })
     jQuery('#messages').append(html)
-
+    scrollToBottom()
     /*    var li = jQuery('<li></li>')
         // Open the link i separate tab
         var a = jQuery('<a target="_blank">My Current Location:</a>')
