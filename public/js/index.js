@@ -13,19 +13,21 @@ socket.on('disconnect',function(){
 
 // Listen to custom events
 socket.on('newMessage',function(message){
+    var formattedTime = moment(message.createdAt).format('h:mm a')
     console.log("New message from the server", message)
     var li = jQuery('<li></li>')
-    li.text(`${message.from} : ${message.text}`)
+    li.text(`${message.from}  ${formattedTime} ${message.text}`)
     jQuery('#messages').append(li)
 })
 
 socket.on('newLocationMessage',function(message){
+    let formattedTime = moment(message.createdAt).format('h:mm a')
     console.log("New message from the server", message)
     var li = jQuery('<li></li>')
     // Open the link i separate tab
     var a = jQuery('<a target="_blank">My Current Location:</a>')
 
-    li.text(`${message.from} : `)
+    li.text(`${message.from} ${formattedTime} `)
     a.attr('href',message.url)
     li.append(a)
     jQuery('#messages').append(li)
@@ -45,7 +47,7 @@ jQuery('#message-form').on('submit',function(e){
     e.preventDefault()
     var messageTextBox = jQuery('[name=message]')
     socket.emit('createMessage',{
-        from: 'jQuery User',
+        from: 'User',
         text:messageTextBox.val()
     },function(){
         // Clear the text field
@@ -73,7 +75,6 @@ locationButton.on('click',function(){
                console.log(position)
         },function(){
             locationButton.removeAttr('disabled').text('Send location')
-            
             alert('Unable to fetch the location')
         })
 })
