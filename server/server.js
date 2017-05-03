@@ -90,10 +90,13 @@ io.on('connection',(socket)=>{
 
     socket.on('createMessage',(newMessage,callback)=>{
 
-        console.log('New message from the client',newMessage)
-
-        // Emit this new message to all the users connected
-        io.emit('newMessage',generateMessage(newMessage.from,newMessage.text))
+         //console.log('New message from the client',newMessage)
+        
+        let user = users.getUser(socket.id)
+        if(user && isRealString(newMessage.text)){
+            // Emit this new message to all the users connected
+            io.to(user.room).emit('newMessage',generateMessage(user.name,newMessage.text))
+        }
 
         //Just acknowledge the client
         //callback('This Server acknowledgement')
@@ -113,7 +116,12 @@ io.on('connection',(socket)=>{
     })
 
     socket.on('createGeoLocationMessage',(coords)=>{
-        io.emit('newLocationMessage',generateLocationMessage('Admin',coords.latitude,coords.longitude))
+
+        let user = users.getUser(socket.id)
+        if(user){
+    io.to(user.room).emit('newLocationMessage',generateLocationMessage(user.name,coords.latitude,coords.longitude))
+        }
+       
     })
 
     socket.on('disconnect',()=>{
