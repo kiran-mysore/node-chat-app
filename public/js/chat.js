@@ -3,12 +3,30 @@
 var socket = io()
 
 socket.on('connect',function(){
-        console.log('Connected to Server')
-
+    var params = jQuery.deparam(window.location.search)
+        //console.log('Connected to Server')
+   socket.emit('join',params,function(err){
+       if(err){
+        alert(err)
+        window.location.href = '/';
+       }else{
+        console.log('No ERROR :)')
+       }
+   })     
 })
 
 socket.on('disconnect',function(){
             console.log('Disconnectd from the server')
+})
+
+socket.on('updateUserList', function(usersArray){
+    console.log('user List', usersArray)
+    let ol = jQuery('<ol></ol>')
+    usersArray.forEach(function(user){
+        ol.append(jQuery('<li></li>').text(user))
+    })
+
+    jQuery('#users').html(ol)
 })
 
 function scrollToBottom(){
